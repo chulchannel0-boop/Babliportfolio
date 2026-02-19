@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Babli | Google Ads Expert</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+:root{--black:#080808;--white:#f5f0e8;--gold:#f0c040;--orange:#ff5e1a;--mid:#141414;--mid2:#1a1a1a;--muted:#555;--border:rgba(240,192,64,0.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.03;pointer-events:none;z-index:9990;}
+
+.cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:38px;height:38px;border:1.5px solid rgba(240,192,64,.6);border-radius:50%;pointer-events:none;z-index:9998;transition:width .3s,height .3s;mix-blend-mode:difference;}
+.cursor-ring.big{width:64px;height:64px;}
+.scroll-line{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--orange));z-index:9995;transform-origin:left;transform:scaleX(0);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:20px 60px;backdrop-filter:blur(24px);background:rgba(8,8,8,.8);border-bottom:1px solid var(--border);transition:border-color .3s;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:5px;color:var(--gold);text-decoration:none;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .3s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width .3s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{width:100%;}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.nav-burger span{display:block;width:22px;height:1.5px;background:var(--gold);transition:all .3s;}
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(8,8,8,.97);z-index:190;flex-direction:column;align-items:center;justify-content:center;gap:34px;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:3px;color:var(--white);text-decoration:none;transition:color .3s;}
+.mobile-menu a:hover{color:var(--gold);}
+.mob-close{position:absolute;top:24px;right:28px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);cursor:pointer;text-transform:uppercase;}
+
+/* HERO */
+#hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:120px 60px 80px;position:relative;overflow:hidden;gap:40px;}
+.hero-bg-text{position:absolute;bottom:-80px;right:-30px;font-family:'Bebas Neue',sans-serif;font-size:clamp(100px,18vw,280px);color:transparent;-webkit-text-stroke:1px rgba(240,192,64,0.05);line-height:1;pointer-events:none;user-select:none;white-space:nowrap;}
+.hero-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.hero-label::before{content:'';display:inline-block;width:26px;height:1px;background:var(--gold);}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,9vw,118px);line-height:.92;letter-spacing:2px;}
+.hero-name em{font-style:normal;color:transparent;-webkit-text-stroke:2px var(--gold);}
+.hero-title{font-size:11px;font-weight:300;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:16px;}
+.hero-title strong{color:var(--orange);font-weight:500;}
+.hero-desc{font-size:14px;line-height:1.9;color:rgba(245,240,232,.52);max-width:410px;margin-top:22px;}
+.hero-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px;}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--gold);color:var(--black);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;font-weight:700;transition:background .3s,transform .2s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.btn-primary:hover{background:var(--orange);transform:translateY(-2px);}
+.btn-secondary{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border:1px solid var(--border);color:var(--white);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:border-color .3s,color .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.hero-right{display:flex;justify-content:center;align-items:center;position:relative;}
+.hero-photo-wrap{position:relative;width:300px;height:380px;}
+.hero-photo-wrap::before{content:'';position:absolute;inset:-16px;border:1px solid var(--border);clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px);}
+.hero-photo-wrap::after{content:'';position:absolute;bottom:-10px;right:-10px;width:100%;height:100%;background:linear-gradient(135deg,var(--gold),var(--orange));z-index:-1;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px);}
+.hero-photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px);display:block;background:#1a1a1a;}
+.hero-stats{position:absolute;bottom:-16px;left:-44px;display:flex;flex-direction:column;gap:10px;}
+.stat-card{background:var(--mid2);border:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;gap:10px;clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);line-height:1;}
+.stat-label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+
+/* MARQUEE */
+.marquee-section{overflow:hidden;padding:15px 0;background:var(--mid);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:60px 0;}
+.marquee-track{display:flex;animation:marquee 26s linear infinite;width:max-content;}
+.marquee-item{display:inline-flex;align-items:center;gap:14px;padding:0 32px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* SECTIONS */
+section{padding:100px 60px;}
+.section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.section-label::before{content:'';display:block;width:20px;height:1px;background:var(--gold);}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,6.5vw,80px);line-height:.95;letter-spacing:1px;margin-bottom:54px;}
+
+/* EXPERTISE */
+#expertise{background:var(--black);}
+.expertise-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+.expertise-card{background:var(--black);padding:42px 34px;position:relative;overflow:hidden;transition:background .4s;}
+.expertise-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(var(--gold),var(--orange));transition:height .4s;}
+.expertise-card:hover{background:#0d0d0d;}
+.expertise-card:hover::before{height:100%;}
+.card-icon-wrap{width:46px;height:46px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:22px;clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);background:var(--mid2);transition:background .3s;}
+.expertise-card:hover .card-icon-wrap{background:rgba(240,192,64,.08);}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:25px;letter-spacing:1px;margin-bottom:10px;}
+.card-desc{font-size:13px;line-height:1.8;color:rgba(245,240,232,.43);}
+.card-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;}
+.tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 9px;border:1px solid var(--border);color:var(--gold);}
+
+/* METRICS */
+#metrics{background:var(--gold);padding:68px 60px;}
+.metrics-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;}
+.metric-item{text-align:center;}
+.metric-number{font-family:'Bebas Neue',sans-serif;font-size:70px;line-height:1;color:var(--black);display:block;}
+.metric-suffix{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--orange);}
+.metric-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(8,8,8,.5);margin-top:5px;}
+
+/* STACKED CARDS */
+#stacked{background:var(--mid);padding:100px 0 0;overflow:hidden;}
+#stacked .pad{padding:0 60px;}
+.stacked-title-el{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,6.5vw,80px);line-height:.95;letter-spacing:1px;margin-bottom:0;padding:0 60px;}
+
+.stack-scroll-wrapper{height:calc(10 * 230px + 100vh);position:relative;}
+.stack-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+.stack-cards-container{position:relative;width:min(700px,90vw);height:420px;}
+.stack-card{position:absolute;inset:0;background:var(--black);border:1px solid var(--border);clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);padding:36px 44px;will-change:transform,opacity;}
+.sc-top{display:flex;align-items:center;gap:16px;margin-bottom:22px;}
+.sc-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1;opacity:.18;margin-right:auto;}
+.sc-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:5px 11px;border:1px solid var(--border);color:var(--muted);}
+.sc-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(240,192,64,.06);border:1px solid var(--border);clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px);flex-shrink:0;}
+.sc-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;margin-bottom:10px;}
+.sc-desc{font-size:13px;line-height:1.8;color:rgba(245,240,232,.46);max-width:520px;}
+.sc-bar{height:2px;background:var(--border);margin-top:24px;position:relative;overflow:hidden;}
+.sc-bar-fill{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--gold),var(--orange));width:var(--w,0%);}
+.stack-progress{display:flex;gap:6px;margin-top:20px;}
+.sp-dot{width:20px;height:2px;background:rgba(255,255,255,.1);transition:background .3s;}
+.sp-dot.active{background:var(--gold);}
+.stack-hint{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:12px;}
+
+/* EXPERIENCE */
+#experience{background:#080808;}
+.exp-list{display:flex;flex-direction:column;}
+.exp-item{display:grid;grid-template-columns:170px 1fr 90px;gap:36px;align-items:start;padding:42px 0;border-bottom:1px solid var(--border);position:relative;}
+.exp-item::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--gold);transition:width .6s ease;}
+.exp-item:hover::after{width:100%;}
+.exp-year{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;padding-top:4px;}
+.exp-company{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;line-height:1;margin-bottom:6px;}
+.exp-role{font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:16px;}
+.exp-bullets{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.exp-bullets li{font-size:13px;color:rgba(245,240,232,.43);line-height:1.75;display:flex;gap:10px;}
+.exp-bullets li::before{content:'→';color:var(--orange);flex-shrink:0;font-size:10px;margin-top:3px;}
+.exp-badge{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border:1px solid var(--border);color:var(--muted);height:fit-content;white-space:nowrap;}
+
+/* SKILLS */
+#skills{background:var(--black);}
+.skills-wrap{display:grid;grid-template-columns:1fr 1fr;gap:68px;}
+.skill-category-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:26px;display:flex;align-items:center;gap:8px;color:var(--orange);}
+.skill-bar-wrap{margin-bottom:17px;}
+.skill-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.skill-name{font-size:12px;color:var(--white);display:flex;align-items:center;gap:7px;}
+.skill-pct{font-family:'Space Mono',monospace;font-size:9px;color:var(--gold);}
+.skill-bar-bg{height:1.5px;background:rgba(255,255,255,.07);}
+.skill-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--orange));width:0;transition:width 1.3s cubic-bezier(.22,1,.36,1);}
+
+/* CONTACT */
+#contact{background:var(--mid);text-align:center;}
+.contact-inner{max-width:660px;margin:0 auto;}
+.contact-big{font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,9vw,108px);line-height:.92;letter-spacing:2px;margin-bottom:26px;}
+.contact-big em{font-style:normal;color:transparent;-webkit-text-stroke:1.5px var(--gold);}
+.contact-sub{font-size:14px;color:rgba(245,240,232,.43);line-height:1.85;margin-bottom:42px;}
+.contact-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+.contact-link{display:inline-flex;align-items:center;gap:9px;padding:13px 26px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all .3s;clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);}
+.contact-link.primary{background:var(--gold);color:var(--black);font-weight:700;}
+.contact-link.primary:hover{background:var(--orange);}
+.contact-link.secondary{border:1px solid var(--border);color:var(--white);}
+.contact-link.secondary:hover{border-color:var(--gold);color:var(--gold);}
+
+/* FOOTER */
+footer{background:var(--black);border-top:1px solid var(--border);padding:26px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+footer p{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+.footer-socials{display:flex;gap:16px;}
+.footer-socials a{color:var(--muted);transition:color .3s;}
+.footer-socials a:hover{color:var(--gold);}
+
+/* FLOATING BADGE */
+.floating-badge{position:fixed;bottom:34px;right:34px;z-index:400;width:80px;height:80px;cursor:pointer;}
+.badge-ring{width:100%;height:100%;border:1px solid rgba(240,192,64,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:spinBadge 14s linear infinite;}
+.badge-text{font-family:'Space Mono',monospace;font-size:6px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);text-align:center;line-height:1.7;animation:spinBadge 14s linear infinite reverse;}
+@keyframes spinBadge{to{transform:rotate(360deg);}}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  #hero{grid-template-columns:1fr;padding:110px 40px 60px;gap:48px;}
+  .hero-right{order:-1;}
+  .hero-photo-wrap{width:250px;height:310px;}
+  .hero-stats{left:-16px;}
+  .expertise-grid{grid-template-columns:1fr 1fr;}
+  .metrics-inner{grid-template-columns:repeat(2,1fr);}
+  .exp-item{grid-template-columns:120px 1fr;gap:18px;}
+  .exp-badge{display:none;}
+  .skills-wrap{grid-template-columns:1fr;}
+  section{padding:80px 40px;}
+  nav{padding:16px 40px;}
+  footer{padding:22px 40px;}
+}
+@media(max-width:768px){
+  nav{padding:14px 22px;}
+  .nav-links{display:none;}
+  .nav-burger{display:flex;}
+  body{cursor:auto;}
+  .cursor,.cursor-ring{display:none;}
+  #hero{padding:96px 22px 56px;gap:38px;}
+  .hero-stats{position:static;margin-top:14px;flex-direction:row;}
+  section{padding:66px 22px;}
+  .expertise-grid{grid-template-columns:1fr;}
+  .metrics-inner{grid-template-columns:1fr 1fr;}
+  .exp-item{grid-template-columns:1fr;gap:7px;}
+  .stack-card{padding:24px 22px;}
+  .stacked-title-el,.stack-hint,.stack-progress{padding:0 22px;}
+  #stacked .pad{padding:0 22px;}
+  footer{padding:18px 22px;}
+  .floating-badge{bottom:18px;right:18px;width:62px;height:62px;}
+}
+@media(max-width:480px){
+  .hero-photo-wrap{width:200px;height:250px;}
+  .hero-cta-row{flex-direction:column;align-items:flex-start;}
+  .contact-links{flex-direction:column;align-items:center;}
+  .metrics-inner{gap:16px;}
+  .metric-number{font-size:54px;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="scroll-line" id="scrollLine"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <span class="mob-close" onclick="closeMobile()">✕ Close</span>
+  <a href="#expertise" onclick="closeMobile()">Expertise</a>
+  <a href="#stacked" onclick="closeMobile()">Portfolio</a>
+  <a href="#experience" onclick="closeMobile()">Experience</a>
+  <a href="#skills" onclick="closeMobile()">Skills</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">BABLI</a>
+  <ul class="nav-links">
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#stacked">Portfolio</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-burger" id="burger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-label" id="hL">Google Ads Expert · Chandigarh, IN</div>
+    <h1 class="hero-name" id="hN">BABLI<br><em>DRIVES</em><br>RESULTS</h1>
+    <p class="hero-title" id="hT">Digital Marketing Specialist &nbsp;·&nbsp; <strong>Performance Marketing Pro</strong></p>
+    <p class="hero-desc" id="hD">Precision-engineered Google Ads, Meta & Snapchat campaigns backed by airtight GTM server-side tracking. Every rupee accountable. Every result measurable.</p>
+    <div class="hero-cta-row" id="hC">
+      <a href="#contact" class="btn-primary">
+        Let's Work
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#stacked" class="btn-secondary">
+        View Work
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-wrap" id="hP">
+      <img src="./WhatsApp Image 2026-02-19 at 8.22.04 AM (1).jpeg' width='300' height='380' viewBox='0 0 300 380'%3E%3Crect fill='%231a1a1a' width='300' height='380'/%3E%3Ccircle cx='150' cy='130' r='55' fill='%23252525'/%3E%3Cellipse cx='150' cy='320' rx='90' ry='72' fill='%23252525'/%3E%3Ctext x='150' y='210' text-anchor='middle' fill='%23f0c040' font-family='Georgia' font-size='11' letter-spacing='2'%3EYour Photo%3C/text%3E%3C/svg%3E" alt="Babli - Digital Marketing Specialist">
+    </div>
+    <div class="hero-stats" id="hS">
+      <div class="stat-card"><div><div class="stat-num">3+</div><div class="stat-label">Yrs Exp</div></div></div>
+      <div class="stat-card"><div><div class="stat-num">50+</div><div class="stat-label">Campaigns</div></div></div>
+    </div>
+  </div>
+  <div class="hero-bg-text" id="hBg">ADS</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><path d="M24 4L4 40h12l8-16 8 16h12z" fill="#4285F4"/><circle cx="38" cy="40" r="6" fill="#FBBC04"/><circle cx="10" cy="40" r="6" fill="#34A853"/></svg>Google Ads</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="#1877F2"/><path d="M26 34v-9h3l.5-3.5H26V19c0-1 .5-2 2-2h1.5V14s-1.5-.5-3-.5c-3 0-5 2-5 5v2.5h-3V25h3v9z" fill="white"/></svg>Meta Ads</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><path d="M24 4C13.5 4 5 12.5 5 23c0 5.5 2.3 10.4 6 13.8 0 .6-.1 1.2-.3 1.8-.4 1.3-1.2 2-2.2 2.3-.3.1-.5.4-.4.7.1.3.3.5.6.5 1.6.2 3-.3 4.2-1.3.4-.3.7-.6 1-.9.3.3.9.5 1.6.7 1.8.4 4 .8 4.5 2 .1.3.4.5.7.5.3 0 .6-.2.7-.5.5-1.2 2.7-1.6 4.5-2 .7-.2 1.3-.4 1.6-.7.3.3.6.6 1 .9 1.2 1 2.6 1.5 4.2 1.3.3 0 .5-.2.6-.5.1-.3-.1-.6-.4-.7-1-.3-1.8-1-2.2-2.3-.2-.6-.3-1.2-.3-1.8 3.7-3.4 6-8.3 6-13.8C43 12.5 34.5 4 24 4z" fill="#FFFC00"/></svg>Snapchat Ads</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="5" fill="#8AB4F8"/><path d="M24 12v24M12 24h24" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg>Google Tag Manager</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1" fill="#f0c040"/><circle cx="6" cy="18" r="1" fill="#f0c040"/></svg>Server-Side Tracking</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5e1a" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Meta CAPI</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>SEO Strategy</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6D00" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Analytics & ROI</div>
+    <!-- Duplicate for seamless loop -->
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><path d="M24 4L4 40h12l8-16 8 16h12z" fill="#4285F4"/><circle cx="38" cy="40" r="6" fill="#FBBC04"/><circle cx="10" cy="40" r="6" fill="#34A853"/></svg>Google Ads</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="#1877F2"/><path d="M26 34v-9h3l.5-3.5H26V19c0-1 .5-2 2-2h1.5V14s-1.5-.5-3-.5c-3 0-5 2-5 5v2.5h-3V25h3v9z" fill="white"/></svg>Meta Ads</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><path d="M24 4C13.5 4 5 12.5 5 23c0 5.5 2.3 10.4 6 13.8 0 .6-.1 1.2-.3 1.8-.4 1.3-1.2 2-2.2 2.3-.3.1-.5.4-.4.7.1.3.3.5.6.5 1.6.2 3-.3 4.2-1.3.4-.3.7-.6 1-.9.3.3.9.5 1.6.7 1.8.4 4 .8 4.5 2 .1.3.4.5.7.5.3 0 .6-.2.7-.5.5-1.2 2.7-1.6 4.5-2 .7-.2 1.3-.4 1.6-.7.3.3.6.6 1 .9 1.2 1 2.6 1.5 4.2 1.3.3 0 .5-.2.6-.5.1-.3-.1-.6-.4-.7-1-.3-1.8-1-2.2-2.3-.2-.6-.3-1.2-.3-1.8 3.7-3.4 6-8.3 6-13.8C43 12.5 34.5 4 24 4z" fill="#FFFC00"/></svg>Snapchat Ads</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="5" fill="#8AB4F8"/><path d="M24 12v24M12 24h24" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg>Google Tag Manager</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1" fill="#f0c040"/><circle cx="6" cy="18" r="1" fill="#f0c040"/></svg>Server-Side Tracking</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5e1a" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Meta CAPI</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>SEO Strategy</div>
+    <div class="marquee-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6D00" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Analytics & ROI</div>
+  </div>
+</div>
+
+<!-- EXPERTISE -->
+<section id="expertise">
+  <div class="section-label">What I Do</div>
+  <h2 class="section-title">CORE<br>EXPERTISE</h2>
+  <div class="expertise-grid">
+    <div class="expertise-card">
+      <div class="card-icon-wrap"><svg width="22" height="22" viewBox="0 0 48 48"><path d="M24 4L4 40h12l8-16 8 16h12z" fill="#4285F4"/><circle cx="38" cy="40" r="6" fill="#FBBC04"/><circle cx="10" cy="40" r="6" fill="#34A853"/></svg></div>
+      <div class="card-title">Google Ads Mastery</div>
+      <p class="card-desc">Full-funnel management — Search, Display, Shopping, PMax & YouTube. Precision bidding strategies that slash CPA and maximise qualified volume.</p>
+      <div class="card-tags"><span class="tag">Search</span><span class="tag">PMax</span><span class="tag">Shopping</span><span class="tag">Display</span><span class="tag">YouTube</span></div>
+    </div>
+    <div class="expertise-card">
+      <div class="card-icon-wrap"><svg width="22" height="22" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="#1877F2"/><path d="M26 34v-9h3l.5-3.5H26V19c0-1 .5-2 2-2h1.5V14s-1.5-.5-3-.5c-3 0-5 2-5 5v2.5h-3V25h3v9z" fill="white"/></svg></div>
+      <div class="card-title">Meta & Social Ads</div>
+      <p class="card-desc">Creative-led Facebook & Instagram campaigns with surgical audience targeting. Snapchat ads to reach younger demographics at scale and convert cold traffic.</p>
+      <div class="card-tags"><span class="tag">Facebook</span><span class="tag">Instagram</span><span class="tag">Snapchat</span><span class="tag">Retargeting</span></div>
+    </div>
+    <div class="expertise-card">
+      <div class="card-icon-wrap"><svg width="22" height="22" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="5" fill="#8AB4F8"/><path d="M24 12v24M12 24h24" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg></div>
+      <div class="card-title">Tracking & GTM</div>
+      <p class="card-desc">Zero-gap tracking via GTM server containers & Meta CAPI. Every click, lead, and conversion captured with surgical accuracy for real data-driven decisions.</p>
+      <div class="card-tags"><span class="tag">GTM</span><span class="tag">Server-Side</span><span class="tag">Meta CAPI</span><span class="tag">GA4</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section id="metrics">
+  <div class="metrics-inner">
+    <div class="metric-item"><span class="metric-number" data-target="3">0</span><span class="metric-suffix">+</span><p class="metric-label">Years Experience</p></div>
+    <div class="metric-item"><span class="metric-number" data-target="50">0</span><span class="metric-suffix">+</span><p class="metric-label">Campaigns Managed</p></div>
+    <div class="metric-item"><span class="metric-number" data-target="40">0</span><span class="metric-suffix">%</span><p class="metric-label">Avg ROI Lift</p></div>
+    <div class="metric-item"><span class="metric-number" data-target="5">0</span><span class="metric-suffix">★</span><p class="metric-label">Client Rating</p></div>
+  </div>
+</section>
+
+<!-- STACKED CARDS PARALLAX -->
+<section id="stacked">
+  <div class="pad"><div class="section-label">Portfolio Highlights</div></div>
+  <h2 class="stacked-title-el">CAMPAIGN<br>SHOWCASE</h2>
+
+  <div class="stack-scroll-wrapper" id="stackWrapper">
+    <div class="stack-sticky" id="stackSticky">
+      <div class="stack-cards-container" id="stackContainer">
+
+        <div class="stack-card" data-card="0">
+          <div class="sc-top"><span class="sc-num">01</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 48 48"><path d="M24 4L4 40h12l8-16 8 16h12z" fill="#4285F4"/><circle cx="38" cy="40" r="6" fill="#FBBC04"/><circle cx="10" cy="40" r="6" fill="#34A853"/></svg></div><span class="sc-tag">Google Search</span></div>
+          <div class="sc-title">E-Commerce Search Campaign</div>
+          <p class="sc-desc">Managed a ₹5L/month Google Search campaign for a D2C brand. Reduced CPC by 38% while lifting conversion rate from 1.8% → 4.2% through keyword sculpting and smart bid automation.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:92%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="1">
+          <div class="sc-top"><span class="sc-num">02</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="#1877F2"/><path d="M26 34v-9h3l.5-3.5H26V19c0-1 .5-2 2-2h1.5V14s-1.5-.5-3-.5c-3 0-5 2-5 5v2.5h-3V25h3v9z" fill="white"/></svg></div><span class="sc-tag">Meta Ads</span></div>
+          <div class="sc-title">Real Estate Lead Generation</div>
+          <p class="sc-desc">Meta funnel for a Chandigarh real estate developer. Generated 800+ qualified leads at ₹180 CPL using detailed audience layering, lookalikes, and UGC-style video creatives.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:85%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="2">
+          <div class="sc-top"><span class="sc-num">03</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 48 48"><path d="M24 4C13.5 4 5 12.5 5 23c0 5.5 2.3 10.4 6 13.8 0 .6-.1 1.2-.3 1.8-.4 1.3-1.2 2-2.2 2.3-.3.1-.5.4-.4.7.1.3.3.5.6.5 1.6.2 3-.3 4.2-1.3.4-.3.7-.6 1-.9.3.3.9.5 1.6.7 1.8.4 4 .8 4.5 2 .1.3.4.5.7.5.3 0 .6-.2.7-.5.5-1.2 2.7-1.6 4.5-2 .7-.2 1.3-.4 1.6-.7.3.3.6.6 1 .9 1.2 1 2.6 1.5 4.2 1.3.3 0 .5-.2.6-.5.1-.3-.1-.6-.4-.7-1-.3-1.8-1-2.2-2.3-.2-.6-.3-1.2-.3-1.8 3.7-3.4 6-8.3 6-13.8C43 12.5 34.5 4 24 4z" fill="#FFFC00"/></svg></div><span class="sc-tag">Snapchat Ads</span></div>
+          <div class="sc-title">Youth Brand Awareness</div>
+          <p class="sc-desc">Snapchat Story & Collection ads for a fashion brand targeting 18–28 year olds. Achieved 2.4M impressions with 4.8% swipe-up rate — 2× the platform benchmark.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:78%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="3">
+          <div class="sc-top"><span class="sc-num">04</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="5" fill="#8AB4F8"/><path d="M24 12v24M12 24h24" stroke="white" stroke-width="3.5" stroke-linecap="round"/></svg></div><span class="sc-tag">GTM + Server-Side</span></div>
+          <div class="sc-title">Full Tracking Overhaul</div>
+          <p class="sc-desc">Rebuilt an e-commerce store's tracking from scratch — GTM server container on GCP, Meta CAPI, GA4 event schema & Google Ads enhanced conversions. Data accuracy improved by 94%.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:96%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="4">
+          <div class="sc-top"><span class="sc-num">05</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6D00" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><span class="sc-tag">Performance Max</span></div>
+          <div class="sc-title">PMax Broadband Campaign</div>
+          <p class="sc-desc">Google PMax for Connect Broadband combining Search, Display, YouTube & Gmail signals. Achieved 3.2× ROAS within 45 days through asset group testing and precise audience signals.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:88%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="5">
+          <div class="sc-top"><span class="sc-num">06</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div><span class="sc-tag">SEO + Ads Synergy</span></div>
+          <div class="sc-title">Holistic Digital Strategy</div>
+          <p class="sc-desc">Combined Google Ads + SEO for a SaaS client. Organic traffic grew 140% in 6 months while paid CPC dropped 22% as Quality Scores improved from higher organic relevance signals.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:82%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="6">
+          <div class="sc-top"><span class="sc-num">07</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="sc-tag">Audience Strategy</span></div>
+          <div class="sc-title">5-Stage Remarketing Funnel</div>
+          <p class="sc-desc">Built a 5-stage remarketing funnel across Google & Meta for an ed-tech brand. Segmented by page depth, video views & cart abandonment — reduced funnel drop-off by 55%.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:87%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="7">
+          <div class="sc-top"><span class="sc-num">08</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E91E63" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><span class="sc-tag">YouTube Ads</span></div>
+          <div class="sc-title">Brand Awareness at Scale</div>
+          <p class="sc-desc">YouTube skippable + Display retargeting for a healthcare brand. 8M+ impressions at ₹0.08 CPV, brand recall uplift of 34% measured via Google Brand Lift study over 8 weeks.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:80%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="8">
+          <div class="sc-top"><span class="sc-num">09</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff5e1a" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><span class="sc-tag">Meta CAPI</span></div>
+          <div class="sc-title">iOS Signal Recovery</div>
+          <p class="sc-desc">Deployed Meta Conversions API to bridge iOS 14.5+ signal loss for a fintech client. Event match quality score improved from 4.2 → 8.7, recovering 60% of previously lost conversion data.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:94%"></div></div>
+        </div>
+
+        <div class="stack-card" data-card="9">
+          <div class="sc-top"><span class="sc-num">10</span><div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20M6 4v5M10 4v5"/></svg></div><span class="sc-tag">Reporting & Analytics</span></div>
+          <div class="sc-title">GA4 Migration & Dashboards</div>
+          <p class="sc-desc">Led full GA4 migration for 3 clients: custom events, funnel exploration & Looker Studio dashboards. Automated weekly reports saving 6+ hours per client per week.</p>
+          <div class="sc-bar"><div class="sc-bar-fill" style="--w:90%"></div></div>
+        </div>
+
+      </div>
+      <div class="stack-progress" id="stackProgress">
+        <div class="sp-dot active"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+        <div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+        <div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+        <div class="sp-dot"></div>
+      </div>
+      <div class="stack-hint">↓ Scroll through campaigns</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">Career</div>
+  <h2 class="section-title">WORK<br>HISTORY</h2>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-year">2024<br>Present</div>
+      <div>
+        <div class="exp-company">Base2Brand Infotech</div>
+        <div class="exp-role">Digital Marketing Specialist</div>
+        <ul class="exp-bullets">
+          <li>Managing and optimizing Google Ads, Meta Ads & Snapchat campaigns across multiple industries</li>
+          <li>Advanced tracking via GTM server containers, Meta CAPI & conversion tracking</li>
+          <li>Data-driven reporting and strategic campaign analysis for management</li>
+          <li>SEO optimization & social media content to amplify brand visibility</li>
+        </ul>
+      </div>
+      <div class="exp-badge">Full-time</div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-year">2021<br>2024</div>
+      <div>
+        <div class="exp-company">Connect Broadband</div>
+        <div class="exp-role">Digital Marketing Executive · 2.5 Yrs</div>
+        <ul class="exp-bullets">
+          <li>Planned and executed Google, Meta & multi-platform campaigns for broadband services</li>
+          <li>Built tracking & analytics pipelines to monitor and maximize ROI</li>
+          <li>Managed social accounts, content creation & SEO strategy end-to-end</li>
+          <li>Supervised floor operations and coordinated cross-functional teams</li>
+        </ul>
+      </div>
+      <div class="exp-badge">Full-time</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Capabilities</div>
+  <h2 class="section-title">SKILL<br>ARSENAL</h2>
+  <div class="skills-wrap">
+    <div>
+      <div class="skill-category-label">
+        <svg width="11" height="11" viewBox="0 0 48 48"><path d="M24 4L4 40h12l8-16 8 16h12z" fill="#4285F4"/></svg>
+        Paid Media & Advertising
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 48 48"><path d="M24 4L4 40h12l8-16 8 16h12z" fill="#4285F4"/><circle cx="38" cy="40" r="5" fill="#FBBC04"/><circle cx="10" cy="40" r="5" fill="#34A853"/></svg> Google Ads</span><span class="skill-pct">95%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 48 48"><circle cx="24" cy="24" r="18" fill="#1877F2"/></svg> Meta Ads (FB & IG)</span><span class="skill-pct">90%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFC00" stroke-width="2"><circle cx="12" cy="11" r="8"/></svg> Snapchat Ads</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FF6D00" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Campaign Strategy</span><span class="skill-pct">93%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="93"></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="skill-category-label">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+        Tracking & Analytics
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="5" fill="#8AB4F8"/></svg> Google Tag Manager</span><span class="skill-pct">93%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="93"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1" fill="#f0c040"/></svg> Server-Side Tracking</span><span class="skill-pct">85%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ff5e1a" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Meta CAPI</span><span class="skill-pct">88%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-top"><span class="skill-name"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> SEO & Content</span><span class="skill-pct">78%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="78"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-label" style="justify-content:center">Get In Touch</div>
+    <h2 class="contact-big">LET'S <em>GROW</em><br>TOGETHER</h2>
+    <p class="contact-sub">Ready to scale your business with performance marketing that actually delivers? Available for freelance projects, consulting & full-time roles in digital marketing.</p>
+    <div class="contact-links">
+      <a href="mailto:moninew4059@gmail.com" class="contact-link primary">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Email Me
+      </a>
+      <a href="tel:+918968347356" class="contact-link secondary">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-.88a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +91 89683 47356
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Babli · Digital Marketing Specialist</p>
+  <p>Chandigarh, Punjab · India</p>
+  <div class="footer-socials">
+    <a href="mailto:moninew4059@gmail.com" title="Email">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+    </a>
+    <a href="#" title="LinkedIn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
+    <a href="tel:+918968347356" title="Phone">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-.88a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </a>
+  </div>
+</footer>
+
+<a href="#contact" class="floating-badge" id="floatingBadge">
+  <div class="badge-ring">
+    <div class="badge-text">HIRE<br>ME<br>NOW</div>
+  </div>
+</a>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* MOBILE NAV */
+function toggleMobile(){document.getElementById('mobileMenu').classList.toggle('open');}
+function closeMobile(){document.getElementById('mobileMenu').classList.remove('open');}
+
+/* CURSOR */
+const isFine = window.matchMedia('(pointer:fine)').matches;
+if(isFine){
+  const cur=document.getElementById('cursor'), ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;gsap.set(cur,{x:mx-5,y:my-5});});
+  (function anim(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;gsap.set(ring,{x:rx-19,y:ry-19});requestAnimationFrame(anim);})();
+  document.querySelectorAll('a,button,.expertise-card,.stack-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+  });
+}
+
+/* SCROLL PROGRESS BAR */
+window.addEventListener('scroll',()=>{
+  document.getElementById('scrollLine').style.transform=`scaleX(${window.scrollY/(document.body.scrollHeight-window.innerHeight)})`;
+},{ passive:true });
+
+/* HERO ANIMATIONS */
+gsap.set(['#hL','#hT','#hD','#hC'],{opacity:0,y:20});
+gsap.set('#hN',{opacity:0,y:30});
+gsap.set('#hP',{opacity:0,x:50});
+gsap.set('#hS .stat-card',{opacity:0,x:-20});
+gsap.set('#floatingBadge',{opacity:0,scale:.8});
+
+gsap.timeline({defaults:{ease:'power3.out'}})
+  .to('#hL',{opacity:1,y:0,duration:.7,delay:.15})
+  .to('#hN',{opacity:1,y:0,duration:.9},'-=.4')
+  .to('#hT',{opacity:1,y:0,duration:.6},'-=.5')
+  .to('#hD',{opacity:1,y:0,duration:.6},'-=.4')
+  .to('#hC',{opacity:1,y:0,duration:.6},'-=.3')
+  .to('#hP',{opacity:1,x:0,duration:.9},'-=.8')
+  .to('#hS .stat-card',{opacity:1,x:0,duration:.5,stagger:.15},'-=.5')
+  .to('#floatingBadge',{opacity:1,scale:1,duration:.6},'-=.3');
+
+/* HERO BG PARALLAX */
+window.addEventListener('scroll',()=>{
+  const el=document.getElementById('hBg');
+  if(el) el.style.transform=`translateY(${window.scrollY*.22}px)`;
+},{passive:true});
+
+/* EXPERTISE CARDS */
+gsap.from('.expertise-card',{scrollTrigger:{trigger:'#expertise',start:'top 72%'},y:50,opacity:0,duration:.75,stagger:.13,ease:'power2.out'});
+
+/* METRICS COUNTER */
+ScrollTrigger.create({trigger:'#metrics',start:'top 80%',once:true,onEnter:()=>{
+  document.querySelectorAll('.metric-number').forEach(el=>{
+    const t=+el.dataset.target;
+    gsap.to({v:0},{v:t,duration:1.6,ease:'power2.out',onUpdate:function(){el.textContent=Math.round(this.targets()[0].v);}});
+  });
+}});
+
+/* ══════════════════════════════════════
+   STACKED CARDS — SCROLL-DRIVEN REVEAL
+   Cards are stacked. As user scrolls,
+   each card lifts off one by one revealing
+   the card beneath — like dealing from a deck.
+   ══════════════════════════════════════ */
+const cards = Array.from(document.querySelectorAll('.stack-card'));
+const dots  = Array.from(document.querySelectorAll('.sp-dot'));
+const N = cards.length;
+const STEP = 200; // px of scroll per card
+
+// Set initial stacked state
+function resetStack(){
+  cards.forEach((card, i) => {
+    const depth = N - 1 - i; // 0 = top card, N-1 = bottom card
+    gsap.set(card, {
+      y: depth * 8,
+      scale: 1 - depth * 0.025,
+      opacity: depth < 5 ? 1 - depth * 0.06 : 0,
+      zIndex: i + 1,
+      rotation: 0,
+      filter: `brightness(${1 - depth * 0.07})`
+    });
+  });
+}
+resetStack();
+
+let prevIdx = -1;
+
+ScrollTrigger.create({
+  trigger: '#stackWrapper',
+  start: 'top top',
+  end: `+=${N * STEP + 100}`,
+  pin: '#stackSticky',
+  scrub: true,
+  onUpdate(self){
+    const rawIdx = Math.floor(self.progress * N);
+    const dismissedCount = Math.min(rawIdx, N);
+
+    // Update progress dots
+    const activeIdx = Math.min(dismissedCount, N - 1);
+    dots.forEach((d,i) => d.classList.toggle('active', i === activeIdx));
+
+    // Animate cards based on how many have been dismissed
+    cards.forEach((card, i) => {
+      const dismissedFrom = N - 1 - i; // this card's "top" position index
+      // how many cards above this one remain
+      const cardsAbove = Math.max(0, N - 1 - i - dismissedCount);
+
+      if(dismissedFrom < dismissedCount) {
+        // This card has been dismissed — fly it up and off
+        const extra = dismissedCount - dismissedFrom;
+        gsap.to(card,{
+          y: -160 - extra * 20,
+          opacity: 0,
+          scale: 0.85,
+          rotation: gsap.utils.wrap(-8, 8, i),
+          duration: 0,
+          overwrite: true
+        });
+      } else {
+        // Still in the deck — position by depth
+        const depth = cardsAbove;
+        gsap.to(card,{
+          y: depth * 8,
+          scale: 1 - depth * 0.025,
+          opacity: depth < 5 ? 1 - depth * 0.06 : 0,
+          rotation: 0,
+          filter: `brightness(${1 - depth * 0.07})`,
+          duration: 0,
+          overwrite: true
+        });
+      }
+    });
+  }
+});
+
+/* EXPERIENCE */
+gsap.from('.exp-item',{scrollTrigger:{trigger:'#experience',start:'top 73%'},y:28,opacity:0,duration:.65,stagger:.2,ease:'power2.out'});
+
+/* SKILL BARS */
+ScrollTrigger.create({trigger:'#skills',start:'top 72%',once:true,onEnter:()=>{
+  document.querySelectorAll('.skill-bar-fill').forEach(b=>{ b.style.width=b.dataset.width+'%'; });
+}});
+
+/* SECTION TITLES */
+gsap.utils.toArray('.section-title,.stacked-title-el').forEach(t=>{
+  gsap.from(t,{scrollTrigger:{trigger:t,start:'top 87%'},y:34,opacity:0,duration:.8,ease:'power3.out'});
+});
+
+/* NAV BORDER SCROLL */
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').style.borderBottomColor=
+    window.scrollY>60?'rgba(240,192,64,.2)':'rgba(240,192,64,.08)';
+},{passive:true});
+</script>
+</body>
+</html>
